@@ -39,25 +39,6 @@ sub new {
   return @rest ? $path->child(@rest) : $path;
 }
 
-sub to_app {
-  return shift->new(ref $_[0])->to_app(@_) unless blessed $_[0];
-
-  my ($self, $app, %params) = @_;
-
-  $params{directories} ||= {renderer => 'templates', static => 'public'};
-  $params{home}        ||= 0;
-
-  for my $kind (keys %{$params{directories}}) {
-    my $path = $self->child($params{directories}{$kind});
-    warn "[Share] unshift $kind, $path.\n" if DEBUG;
-    next                        unless -d $path;
-    shift @{$app->$kind->paths} unless -d $app->$kind->paths->[0];
-    unshift @{$app->$kind->paths}, $path;
-  }
-
-  return $self;
-}
-
 sub _new_from_inc {
   my ($class, $parts, $inc) = @_;
   my $path = $class->SUPER::new($INC{$inc})->to_abs->to_array;
@@ -107,26 +88,15 @@ Mojo::File::Share - Extension to Mojo::File to find shared/installed files
   my $path = Mojo::File::Share->new("My::Application");
   my $path = Mojo::File::Share->new(My::Application->new);
 
-  # Example full application
-  package MyApp;
-
-  sub startup {
-    my $self = shift;
-
-    # Change public and templates directories to share/ path
-    Mojo::File::Share->to_app($self);
-  }
-
   # Example Makefile.PL
   use File::ShareDir::Install;
   install_share 'share';
 
 =head1 DESCRIPTION
 
-L<Mojo::File::Share> is a merge of L<File::ShareDir> and L<File::Share>, but
-also allows you to modify a L<Mojolicious> application with ease.
+L<Mojo::File::Share> is a merge of L<File::ShareDir> and L<File::Share>
 
-Note: In the same way as L<File::Share>, this module does not support
+Note: In the same way as L <File::Share>, this module does not support
 per-module share directories.
 
 To install the files in "share/", you need something like
@@ -186,14 +156,6 @@ Will find the class name for the object and apply the same rule as for "A
 module name".
 
 =back
-
-=head2 to_app
-
-  my $path = Mojo::File::Share->to_app($mojo_app);
-  my $path = Mojo::File::Share->new("What-Ever")->to_app($mojo_app);
-
-Used to apply the "public" and "templates" directories to you L<Mojolicious>'s
-L<Mojolicious::Static> and L<Mojolicious::Renderer> objects.
 
 =head1 AUTHOR
 
