@@ -50,7 +50,7 @@ sub to_app {
   for my $kind (keys %{$params{directories}}) {
     my $path = $self->child($params{directories}{$kind});
     warn "[Share] unshift $kind, $path.\n" if DEBUG;
-    next unless -d $path;
+    next                        unless -d $path;
     shift @{$app->$kind->paths} unless -d $app->$kind->paths->[0];
     unshift @{$app->$kind->paths}, $path;
   }
@@ -83,7 +83,7 @@ sub _new_from_installed {
     for my $inc (@INC) {
       my $share = $class->SUPER::new($inc, $auto_path);
       warn "[Share] Looking for $share\n" if DEBUG;
-      return $share if -d $share;
+      return $share                       if -d $share;
     }
   }
 
@@ -127,7 +127,7 @@ L<Mojo::File::Share> is a merge of L<File::ShareDir> and L<File::Share>, but
 also allows you to modify a L<Mojolicious> application with ease.
 
 Note: In the same way as L<File::Share>, this module does not support
-per-module share directoris.
+per-module share directories.
 
 To install the files in "share/", you need something like
 L<File::ShareDir::Install>.
