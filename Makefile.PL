@@ -9,9 +9,9 @@ my $GITHUB_URL = 'https://github.com/jhthorsen/mojo-file-share';
 my %WriteMakefileArgs = (
   AUTHOR        => 'Jan Henning Thorsen <jhthorsen@cpan.org>',
   LICENSE       => 'artistic_2',
-  NAME          => 'Mojo::File::Share',
-  ABSTRACT_FROM => 'lib/Mojo/File/Share.pm',
-  VERSION_FROM  => 'lib/Mojo/File/Share.pm',
+  NAME          => 'Mojo::ShareDir',
+  ABSTRACT_FROM => 'lib/Mojo/ShareDir.pm',
+  VERSION_FROM  => 'lib/Mojo/ShareDir.pm',
   EXE_FILES     => [],
   TEST_REQUIRES => {'Test::More'  => '0.30'},
   PREREQ_PM     => {'Mojolicious' => '9.00'},

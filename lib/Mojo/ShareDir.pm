@@ -1,4 +1,4 @@
-package Mojo::File::Share;
+package Mojo::ShareDir;
 use Mojo::Base 'Mojo::File';
 
 use Carp qw(croak);
@@ -66,16 +66,16 @@ sub _new_from_installed {
 
 =head1 NAME
 
-Mojo::File::Share - Shared files Mojo::File paths
+Mojo::ShareDir - Shared files and directories as Mojo::File objects
 
 =head1 SYNOPSIS
 
-  use Mojo::File::Share;
+  use Mojo::ShareDir;
 
   # These will result in the same thing
-  my $path = Mojo::File::Share->new("My-Application");
-  my $path = Mojo::File::Share->new("My::Application");
-  my $path = Mojo::File::Share->new(My::Application->new);
+  my $path = Mojo::ShareDir->new("My-Application");
+  my $path = Mojo::ShareDir->new("My::Application");
+  my $path = Mojo::ShareDir->new(My::Application->new);
 
   # Example Makefile.PL
   use File::ShareDir::Install;
@@ -83,7 +83,7 @@ Mojo::File::Share - Shared files Mojo::File paths
 
 =head1 DESCRIPTION
 
-L<Mojo::File::Share> is a merge of L<File::ShareDir> and L<File::Share>
+L<Mojo::ShareDir> is a merge of L<File::ShareDir> and L<File::Share>
 
 Note: In the same way as L <File::Share>, this module does not support
 per-module share directories.
@@ -93,7 +93,7 @@ L<File::ShareDir::Install>.
 
 =head1 FUNCTIONS
 
-L<Mojo::File::Share> implements the following functions, which can be imported
+L<Mojo::ShareDir> implements the following functions, which can be imported
 individually.
 
 =head2 dist_path
@@ -103,21 +103,21 @@ individually.
   my $path = dist_path "Some::Module", @path;
   my $path = dist_path $some_object, @path;
 
-Construct a new L<Mojo::File::Share> object. Follows the same rules as L</new>.
+Construct a new L<Mojo::ShareDir> object. Follows the same rules as L</new>.
 
 =head1 METHODS
 
-L<Mojo::File::Share> inherits all methods from L<Mojo::File> and implements the
+L<Mojo::ShareDir> inherits all methods from L<Mojo::File> and implements the
 following new ones.
 
 =head2 new
 
-  my $path = Mojo::File::Share->new;
-  my $path = Mojo::File::Share->new("Some-Dist", @path);
-  my $path = Mojo::File::Share->new("Some::Module", @path);
-  my $path = Mojo::File::Share->new($some_object, @path);
+  my $path = Mojo::ShareDir->new;
+  my $path = Mojo::ShareDir->new("Some-Dist", @path);
+  my $path = Mojo::ShareDir->new("Some::Module", @path);
+  my $path = Mojo::ShareDir->new($some_object, @path);
 
-Construct a new L<Mojo::File::Share> object with C<$path> set to either the
+Construct a new L<Mojo::ShareDir> object with C<$path> set to either the
 local "share/" path or the installed for a given distribution.
 
 Will throw an exception if the distribution cannot be found.

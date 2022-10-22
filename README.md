@@ -1,25 +1,15 @@
 # NAME
 
-Mojo::File::Share - Extension to Mojo::File to find shared/installed files
+Mojo::ShareDir - Shared files and directories as Mojo::File objects
 
 # SYNOPSIS
 
-    use Mojo::File::Share;
+    use Mojo::ShareDir;
 
     # These will result in the same thing
-    my $path = Mojo::File::Share->new("My-Application");
-    my $path = Mojo::File::Share->new("My::Application");
-    my $path = Mojo::File::Share->new(My::Application->new);
-
-    # Example full application
-    package MyApp;
-
-    sub startup {
-      my $self = shift;
-
-      # Change public and templates directories to share/ path
-      Mojo::File::Share->to_app($self);
-    }
+    my $path = Mojo::ShareDir->new("My-Application");
+    my $path = Mojo::ShareDir->new("My::Application");
+    my $path = Mojo::ShareDir->new(My::Application->new);
 
     # Example Makefile.PL
     use File::ShareDir::Install;
@@ -27,18 +17,17 @@ Mojo::File::Share - Extension to Mojo::File to find shared/installed files
 
 # DESCRIPTION
 
-[Mojo::File::Share](https://metacpan.org/pod/Mojo::File::Share) is a merge of [File::ShareDir](https://metacpan.org/pod/File::ShareDir) and [File::Share](https://metacpan.org/pod/File::Share), but
-also allows you to modify a [Mojolicious](https://metacpan.org/pod/Mojolicious) application with ease.
+[Mojo::ShareDir](https://metacpan.org/pod/Mojo%3A%3AShareDir) is a merge of [File::ShareDir](https://metacpan.org/pod/File%3A%3AShareDir) and [File::Share](https://metacpan.org/pod/File%3A%3AShare)
 
-Note: In the same way as [File::Share](https://metacpan.org/pod/File::Share), this module does not support
-per-module share directoris.
+Note: In the same way as L <File::Share>, this module does not support
+per-module share directories.
 
 To install the files in "share/", you need something like
-[File::ShareDir::Install](https://metacpan.org/pod/File::ShareDir::Install).
+[File::ShareDir::Install](https://metacpan.org/pod/File%3A%3AShareDir%3A%3AInstall).
 
 # FUNCTIONS
 
-[Mojo::File::Share](https://metacpan.org/pod/Mojo::File::Share) implements the following functions, which can be imported
+[Mojo::ShareDir](https://metacpan.org/pod/Mojo%3A%3AShareDir) implements the following functions, which can be imported
 individually.
 
 ## dist\_path
@@ -48,21 +37,21 @@ individually.
     my $path = dist_path "Some::Module", @path;
     my $path = dist_path $some_object, @path;
 
-Construct a new [Mojo::File::Share](https://metacpan.org/pod/Mojo::File::Share) object. Follows the same rules as ["new"](#new).
+Construct a new [Mojo::ShareDir](https://metacpan.org/pod/Mojo%3A%3AShareDir) object. Follows the same rules as ["new"](#new).
 
 # METHODS
 
-[Mojo::File::Share](https://metacpan.org/pod/Mojo::File::Share) inherits all methods from [Mojo::File](https://metacpan.org/pod/Mojo::File) and implements the
+[Mojo::ShareDir](https://metacpan.org/pod/Mojo%3A%3AShareDir) inherits all methods from [Mojo::File](https://metacpan.org/pod/Mojo%3A%3AFile) and implements the
 following new ones.
 
 ## new
 
-    my $path = Mojo::File::Share->new;
-    my $path = Mojo::File::Share->new("Some-Dist", @path);
-    my $path = Mojo::File::Share->new("Some::Module", @path);
-    my $path = Mojo::File::Share->new($some_object, @path);
+    my $path = Mojo::ShareDir->new;
+    my $path = Mojo::ShareDir->new("Some-Dist", @path);
+    my $path = Mojo::ShareDir->new("Some::Module", @path);
+    my $path = Mojo::ShareDir->new($some_object, @path);
 
-Construct a new [Mojo::File::Share](https://metacpan.org/pod/Mojo::File::Share) object with `$path` set to either the
+Construct a new [Mojo::ShareDir](https://metacpan.org/pod/Mojo%3A%3AShareDir) object with `$path` set to either the
 local "share/" path or the installed for a given distribution.
 
 Will throw an exception if the distribution cannot be found.
@@ -87,14 +76,6 @@ To resolve the shared path, these rules will apply:
     Will find the class name for the object and apply the same rule as for "A
     module name".
 
-## to\_app
-
-    my $path = Mojo::File::Share->to_app($mojo_app);
-    my $path = Mojo::File::Share->new("What-Ever")->to_app($mojo_app);
-
-Used to apply the "public" and "templates" directories to you [Mojolicious](https://metacpan.org/pod/Mojolicious)'s
-[Mojolicious::Static](https://metacpan.org/pod/Mojolicious::Static) and [Mojolicious::Renderer](https://metacpan.org/pod/Mojolicious::Renderer) objects.
-
 # AUTHOR
 
 Jan Henning Thorsen
@@ -108,8 +89,8 @@ the terms of the Artistic License version 2.0.
 
 # SEE ALSO
 
-[File::ShareDir::Install](https://metacpan.org/pod/File::ShareDir::Install)
+[File::ShareDir::Install](https://metacpan.org/pod/File%3A%3AShareDir%3A%3AInstall)
 
-[File::ShareDir](https://metacpan.org/pod/File::ShareDir)
+[File::ShareDir](https://metacpan.org/pod/File%3A%3AShareDir)
 
-[File::Share](https://metacpan.org/pod/File::Share)
+[File::Share](https://metacpan.org/pod/File%3A%3AShare)
