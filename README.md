@@ -4,26 +4,35 @@ Mojo::ShareDir - Shared files and directories as Mojo::File objects
 
 # SYNOPSIS
 
+## Example use of Mojo::ShareDir
+
     use Mojo::ShareDir;
 
-    # These will result in the same thing
-    my $path = Mojo::ShareDir->new("My-Application");
-    my $path = Mojo::ShareDir->new("My::Application");
+    # This will result in the same thing
+    my $path = Mojo::ShareDir->new('My-Application');
+    my $path = Mojo::ShareDir->new('My::Application');
     my $path = Mojo::ShareDir->new(My::Application->new);
 
-    # Example Makefile.PL
+## Example Makefile.PL
+
+    use strict;
+    use warnings;
+    use ExtUtils::MakeMaker;
     use File::ShareDir::Install;
+
     install_share 'share';
+    WriteMakefile(...);
+
+    package MY;
+    use File::ShareDir::Install qw(postamble);
 
 # DESCRIPTION
 
-[Mojo::ShareDir](https://metacpan.org/pod/Mojo%3A%3AShareDir) is a merge of [File::ShareDir](https://metacpan.org/pod/File%3A%3AShareDir) and [File::Share](https://metacpan.org/pod/File%3A%3AShare)
-
-Note: In the same way as L <File::Share>, this module does not support
-per-module share directories.
-
-To install the files in "share/", you need something like
-[File::ShareDir::Install](https://metacpan.org/pod/File%3A%3AShareDir%3A%3AInstall).
+[Mojo::ShareDir](https://metacpan.org/pod/Mojo%3A%3AShareDir) is a module that allows you to find shared files. This
+module works together with [File::ShareDir::Install](https://metacpan.org/pod/File%3A%3AShareDir%3A%3AInstall), which allow you to
+install assets that are not Perl related. In addition, [Mojo::ShareDir](https://metacpan.org/pod/Mojo%3A%3AShareDir)
+makes it very easy to find the files that you have not yet installed by
+looking for projects after resolving `@INC`.
 
 # FUNCTIONS
 

@@ -70,26 +70,35 @@ Mojo::ShareDir - Shared files and directories as Mojo::File objects
 
 =head1 SYNOPSIS
 
+=head2 Example use of Mojo::ShareDir
+
   use Mojo::ShareDir;
 
-  # These will result in the same thing
-  my $path = Mojo::ShareDir->new("My-Application");
-  my $path = Mojo::ShareDir->new("My::Application");
+  # This will result in the same thing
+  my $path = Mojo::ShareDir->new('My-Application');
+  my $path = Mojo::ShareDir->new('My::Application');
   my $path = Mojo::ShareDir->new(My::Application->new);
 
-  # Example Makefile.PL
+=head2 Example Makefile.PL
+
+  use strict;
+  use warnings;
+  use ExtUtils::MakeMaker;
   use File::ShareDir::Install;
+
   install_share 'share';
+  WriteMakefile(...);
+
+  package MY;
+  use File::ShareDir::Install qw(postamble);
 
 =head1 DESCRIPTION
 
-L<Mojo::ShareDir> is a merge of L<File::ShareDir> and L<File::Share>
-
-Note: In the same way as L <File::Share>, this module does not support
-per-module share directories.
-
-To install the files in "share/", you need something like
-L<File::ShareDir::Install>.
+L<Mojo::ShareDir> is a module that allows you to find shared files. This
+module works together with L<File::ShareDir::Install>, which allow you to
+install assets that are not Perl related. In addition, L<Mojo::ShareDir>
+makes it very easy to find the files that you have not yet installed by
+looking for projects after resolving C<@INC>.
 
 =head1 FUNCTIONS
 
