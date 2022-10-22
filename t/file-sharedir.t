@@ -4,17 +4,17 @@ use Test::More;
 
 plan skip_all => 'File::ShareDir is not installed' unless eval 'require File::ShareDir;1';
 
-my ($path, $share);
+subtest 'Find same path as File::ShareDir::dist_dir' => sub {
+  my $share = Mojo::File::Share->new('File-ShareDir');
+  my $path  = File::ShareDir::dist_dir('File-ShareDir');
+  is $path, $share, 'same dist result';
+};
 
-$share = Mojo::File::Share->new('File-ShareDir');
-$path  = File::ShareDir::dist_dir('File-ShareDir');
-is $path, $share, 'same dist result';
-
-{
-  local $TODO = 'Not supported yet.';
-  $share = Mojo::File::Share->new('File::ShareDir');
-  $path  = File::ShareDir::module_dir('File::ShareDir');
+subtest 'Find same path as File::ShareDir::module_dir' => sub {
+  local $TODO = 'Not supported';
+  my $share = Mojo::File::Share->new('File::ShareDir');
+  my $path  = File::ShareDir::module_dir('File::ShareDir');
   is $path, $share, 'same module result';
-}
+};
 
 done_testing;

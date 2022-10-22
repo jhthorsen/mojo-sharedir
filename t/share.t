@@ -2,20 +2,24 @@ use Mojo::Base -strict;
 use Mojo::File::Share;
 use Test::More;
 
-my ($path, $share);
+subtest 'Find local share path by module name' => sub {
+  my $share = Mojo::File::Share->new('Mojo::File::Share');
+  my $path  = Mojo::File->new('share')->to_abs;
+  is $share, $path, 'found share for Mojo::File::Share';
+};
 
-$share = Mojo::File::Share->new('Mojo::File::Share');
-$path  = Mojo::File->new('share')->to_abs;
-is $share, $path, 'found share dir for Mojo::File::Share';
+subtest 'Find local share path by dist name' => sub {
+  my $share = Mojo::File::Share->new('Mojo-File-Share', 'whatever');
+  my $path  = Mojo::File->new(qw(share whatever))->to_abs;
+  is $share, $path, 'got whatever for Mojo::File::Share';
 
-$share = Mojo::File::Share->new('Mojo-File-Share', 'whatever');
-$path  = $path->child('whatever');
-is $share, $path, 'got whatever for Mojo::File::Share';
+  $share = Mojo::File::Share->new('Mojo::File::Share', '.gitignore');
+  ok -e $share, 'got gitignore for Mojo::File::Share';
+};
 
-$share = Mojo::File::Share->new('Mojo::File::Share', '.gitignore');
-ok -e $share, 'got gitignore for Mojo::File::Share';
-
-eval { Mojo::File::Share->new('No::Such::Module') };
-like $@, qr{Could not find dist path for "No::Such::Module"}, 'No::Such::Module';
+subtest 'Failed to find path for unknown module' => sub {
+  eval { Mojo::File::Share->new('No::Such::Module') };
+  like $@, qr{Could not find dist path for "No::Such::Module"}, 'No::Such::Module';
+};
 
 done_testing;

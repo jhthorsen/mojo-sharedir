@@ -1,70 +1,59 @@
 package Mojo::File::Share;
 use Mojo::Base 'Mojo::File';
 
-use Carp;
-use Mojo::Loader 'load_class';
-use Scalar::Util 'blessed';
+use Carp qw(croak);
 
 use constant DEBUG => $ENV{MOJO_FILE_SHARE_DEBUG} || 0;
 
-# Setting this, might be breaking
-use constant SUPPORTS_MODULE_SEARCH => $ENV{MOJO_FILE_SHARE_SUPPORTS_MODULE_SEARCH} || 0;
-
-our @EXPORT_OK = 'dist_path';
+our @EXPORT_OK = qw(dist_path);
 our $VERSION   = '0.01';
 
-our @AUTO_SHARE_DIST   = split '/', 'auto/share/dist';
-our @AUTO_SHARE_MODULE = split '/', 'auto/share/module';
-our $SHARE_DIR         = 'share';
+our @AUTO_SHARE_DIST   = qw(auto share dist);
+our @AUTO_SHARE_MODULE = qw(auto share module);
+our $LOCAL_SHARE_DIR   = 'share';
 
 sub dist_path { __PACKAGE__->new(@_) }
 
 sub new {
-  return shift->SUPER::new(@_) if blessed $_[0];
+  return shift->SUPER::new(@_) if ref $_[0];
 
-  my $class = shift;
-  my ($param, @rest) = (@_ ? shift : scalar caller, @_);
-  $param = ref $param if blessed $param;
+  my ($class, $class_name, @child) = (shift, @_ ? shift : scalar caller, @_);
+  my @class_parts = split /(?:-|::)/, (ref $class_name || $class_name);
+  my $path        = $class->_new_from_inc(\@class_parts) || $class->_new_from_installed(\@class_parts);
+  croak qq(Could not find dist path for "$class_name".) unless $path;
 
-  my @parts = split /(?:-|::)/, $param;
-  my $inc   = sprintf '%s.pm', join '/', @parts;
-
-  warn "[Share] From $param\n" if DEBUG;
-
-  my $path
-    = $INC{$inc} && $class->_new_from_inc(\@parts, $inc)
-    || $class->_new_from_installed(\@parts, $param)
-    || Carp::croak(qq(Could not find dist path for "$param".));
-
-  return @rest ? $path->child(@rest) : $path;
+  $path = $path->child(@child)                            if @child;
+  warn "[Share] $class->new($class_name, ...) == $path\n" if DEBUG;
+  return $path;
 }
 
 sub _new_from_inc {
-  my ($class, $parts, $inc) = @_;
-  my $path = $class->SUPER::new($INC{$inc})->to_abs->to_array;
+  my ($class, $class_parts) = @_;
 
-  pop @$path for 0 .. @$parts;
-  my $share = $class->SUPER::new(@$path, $SHARE_DIR);
-  warn "[Share] Looking in \@INC for $share\n" if DEBUG;
-  return undef unless -d $share;
-  return $share;
+  # Check if the class exists in %INC
+  my $inc_key = sprintf '%s.pm', join '/', @$class_parts;
+  return undef unless $INC{$inc_key} and -e $INC{$inc_key};
+
+  # Find the absolute path to the module and then find the project root
+  my $path = $class->SUPER::new($INC{$inc_key})->to_abs->to_array;
+  pop @$path for 0 .. @$class_parts;
+
+  # Return the project "root/share" if the directory exists
+  my $share = $class->SUPER::new(@$path, $LOCAL_SHARE_DIR);
+  return -d $share && $share;
 }
 
 sub _new_from_installed {
-  my ($class, $parts, $param) = @_;
+  my ($class, $class_parts) = @_;
+
   my @auto_path;
-
-  push @auto_path, $class->SUPER::new(@AUTO_SHARE_MODULE, join '-', @$parts)
-    if SUPPORTS_MODULE_SEARCH and $param =~ m!::!;
-
-  push @auto_path, $class->SUPER::new(@AUTO_SHARE_DIST, join '-', @$parts);    # File::ShareDir::_dist_dir_new()
-  push @auto_path, $class->SUPER::new('auto', @$parts);                        # File::ShareDir::_dist_dir_old()
+  push @auto_path, $class->SUPER::new(@AUTO_SHARE_DIST, join '-', @$class_parts);    # File::ShareDir::_dist_dir_new()
+  push @auto_path, $class->SUPER::new('auto', @$class_parts);                        # File::ShareDir::_dist_dir_old()
 
   for my $auto_path (@auto_path) {
     for my $inc (@INC) {
       my $share = $class->SUPER::new($inc, $auto_path);
-      warn "[Share] Looking for $share\n" if DEBUG;
-      return $share                       if -d $share;
+      return $share if -d $share;
     }
   }
 
@@ -77,7 +66,7 @@ sub _new_from_installed {
 
 =head1 NAME
 
-Mojo::File::Share - Extension to Mojo::File to find shared/installed files
+Mojo::File::Share - Shared files Mojo::File paths
 
 =head1 SYNOPSIS
 
