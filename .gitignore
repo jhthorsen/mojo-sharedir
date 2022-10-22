@@ -2,7 +2,6 @@
 *.bak
 *.old
 *.swp
-/*.tar.gz
 /blib/
 /cover_db
 /inc/
