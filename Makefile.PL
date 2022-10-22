@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use utf8;
 use ExtUtils::MakeMaker;
+use File::ShareDir::Install;
 
 my $GITHUB_URL = 'https://github.com/jhthorsen/mojo-file-share';
 
@@ -13,8 +14,8 @@ my %WriteMakefileArgs = (
   ABSTRACT_FROM => 'lib/Mojo/ShareDir.pm',
   VERSION_FROM  => 'lib/Mojo/ShareDir.pm',
   EXE_FILES     => [],
-  TEST_REQUIRES => {'Test::More'  => '0.30'},
-  PREREQ_PM     => {'Mojolicious' => '9.00'},
+  TEST_REQUIRES => {'Test::More'              => '0.30'},
+  PREREQ_PM     => {'File::ShareDir::Install' => '0.14', 'Mojolicious' => '9.00'},
   META_MERGE    => {
     'dynamic_config' => 0,
     'meta-spec'      => {version   => 2},
@@ -37,4 +38,8 @@ unless (eval { ExtUtils::MakeMaker->VERSION('6.63_03') }) {
   @{$WriteMakefileArgs{PREREQ_PM}}{keys %$test_requires} = values %$test_requires;
 }
 
+install_share 'share';
 WriteMakefile(%WriteMakefileArgs);
+
+package MY;
+use File::ShareDir::Install qw(postamble);

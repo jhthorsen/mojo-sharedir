@@ -2,19 +2,22 @@ use Mojo::Base -strict;
 use Mojo::ShareDir;
 use Test::More;
 
+my @base = $INC{'Mojo/ShareDir.pm'} =~ /\bblib\b/ ? qw(blib lib auto share dist Mojo-ShareDir) : qw(share);
+
 subtest 'Find local share path by module name' => sub {
   my $share = Mojo::ShareDir->new('Mojo::ShareDir');
-  my $path  = Mojo::File->new('share')->to_abs;
+  my $path  = Mojo::File->new(@base)->to_abs;
   is $share, $path, 'found share for Mojo::ShareDir';
 };
 
 subtest 'Find local share path by dist name' => sub {
   my $share = Mojo::ShareDir->new('Mojo-ShareDir', 'whatever');
-  my $path  = Mojo::File->new(qw(share whatever))->to_abs;
+  my $path  = Mojo::File->new(@base, 'whatever')->to_abs;
   is $share, $path, 'got whatever for Mojo::ShareDir';
 
-  $share = Mojo::ShareDir->new('Mojo::ShareDir', '.gitignore');
-  ok -e $share, 'got gitignore for Mojo::ShareDir';
+  $share = Mojo::ShareDir->new('Mojo::ShareDir', 'README.md');
+  ok -e $share, 'got file for Mojo::ShareDir';
+  like $share->slurp, qr{^thorsen\.pm\W*$}s, 'got content for share/README.md';
 };
 
 subtest 'Failed to find path for unknown module' => sub {
