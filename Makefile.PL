@@ -5,7 +5,7 @@ use utf8;
 use ExtUtils::MakeMaker;
 use File::ShareDir::Install;
 
-my $GITHUB_URL = 'https://github.com/jhthorsen/mojo-file-share';
+my $GITHUB_URL = 'https://github.com/jhthorsen/mojo-sharedir';
 
 my %WriteMakefileArgs = (
   AUTHOR        => 'Jan Henning Thorsen <jhthorsen@cpan.org>',
